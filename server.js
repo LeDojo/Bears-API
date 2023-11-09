@@ -1,14 +1,26 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-
 
 const port = process.env.PORT || 4567;
 
-app.get('/', (req, res) => {
-  res.send('Welcome to express API')
-})
+// connect to mongodb
+const mongoose = require('mongoose');
+
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect('mongodb://127.0.0.1:27017/creteil_bears');
+  console.log(`[DATABASE] connect to mongodb`);
+}
+
+app.use(express.urlencoded({ extended:false}))
+app.get("/", (req, res) => {
+  res.send("Welcome to express API");
+});
 // app.get('/bonjour/:name', (req, res) => {
 //   res.send(`reoucouc ${req.params.name}`)
 // })
 
-app.listen(port, () => console.log(`[SERVER]listening on port ${port}`))
+app.use("/bears", require("./routes/bears"));
+
+app.listen(port, () => console.log(`[SERVER]listening on port ${port}`));
