@@ -2,7 +2,6 @@ const bearRouter = require("express").Router();
 const Bear = require("../models/bearModel");
 // const bearRouter = express.Router()
 
-
 /*
 async/await  = loading data before display
 try/catch  => try ... make the action / catch if error
@@ -38,13 +37,23 @@ bearRouter.post("/new", async (req, res) => {
 });
 // METHOD PUT - edit a bear for one or more fields on database
 
-bearRouter.put("/edit", (req, res) => {
-  res.send("edit bear ");
+bearRouter.put("/:id/edit", async (req, res) => {
+  try {
+    let bear = await Bear.findOneAndUpdate({ _id: req.params.id }, req.body);
+    res.send(bear);
+  } catch (error) {
+    console.log(error);
+  }
 });
 // METHOD DELETE - delete data from  database
 
-bearRouter.delete("/delete", (req, res) => {
-  res.send("delete bear ");
+bearRouter.delete("/:id/delete", async (req, res) => {
+  try {
+    await Bear.findOneAndDelete({ _id: req.params.id });
+    res.send({ message: "Delete bear with succes" });
+  } catch (error) {
+    throw error;
+  }
 });
 
 module.exports = bearRouter;
